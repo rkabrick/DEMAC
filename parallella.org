@@ -1,0 +1,408 @@
+* Setting Up a Parallella Cluster on Linux
+This is a guide on how to properly configure a parallella cluster of 4 nodes. The steps listed should
+apply to a cluster of more than just 4 nodes or less.
+** Preliminaries
+*** Required Materials
+For each board you need the following materials
+- Micro USB Power Cable
+- Micro SD Cards (\ge8Gb)
+- A nice Columbian guy to 3D Print a kick ass rack mount for the boards
+- Fan (Optional)
+- Router
+- Switch (Optional)
+
+*** Setting up master SD Card
+Although it should go without saying, you have to use a computer that will not be in the cluster to prep SD Cards
+
+1.) Download whichever operating system you would like (Headless vs HDMI Support) from [[https://www.parallella.org/create-sdcard/][here]]
+2.) Navigate to your Downloads Directory
+#+BEGIN_SRC sh
+cd Downloads
+#+END_SRC
+3.) Extract the File
+#+BEGIN_SRC sh
+gunzip -k parabuntu-2016.11.1-headless-z7010.img.gz
+#+END_SRC
+4.) Figure out where your SD Card is on the machine... It helps to look at the output of this function by volume space.
+#+BEGIN_SRC sh
+lsblk
+#+END_SRC
+
+For me, it was located at */dev/mmcblk0*
+
+5.) Write the image to the SD Card
+#+BEGIN_SRC sh
+sudo dd bs=4M if=parabuntu=2016.11.1-headless-z7010.img of=/dev/mmcblk0 bs=64k
+#+END_SRC
+
+6.) Load SD Card in Parallella
+
+*** Setting up Network (Router + Switch)
+The following instructions will detail how to set up your network so you can easily ssh
+into the headless OS
+
+1.) Connect the one Parallella that should have an OS now to the router
+2.) Login to your routers configuration page by typing the IP Address of the router
+to your web browser. It should look something like this...
+
+[[/home/rkabrick/Pictures/Screenshot%20from%202018-07-25%2013-23-09.png][Router Interface]]
+
+You need to know the login information for the router. If you are using a router that has
+been previously set up look up how to set it back to factory defaults and use the default
+login to access the page.
+
+3.) Navigate to the *Network* tab
+4.) Click on DCHP Client List to see a list of IP's given out by the router
+5.) Look for an entry in this list titled *Parallella*
+6.) Make a note of that IP Address
+
+** Connecting to Your Parallella
+Now that you have the IP Address we can finally ssh into our board and begin configuring the software side of the cluster
+
+1.) Open a terminal (Main computer not parallella)
+2.) ssh into your board using the default username and password for the parabuntu OS
+
+The skeleton for this command is...
+/ssh hostname @ IP Address/
+
+
+/hostname: parallella/
+/Password: parallella/
+
+#+BEGIN_SRC sh
+ssh parallella@192.168.10.103
+#+END_SRC
+
+3.) Follow the prompts and if all went well, you should be greeted with a login message
+
+** Installing Software
+The following instructions are to be completed on the parallella board not your own computer
+*** Updating Archives
+Parabuntu is built on an Ubuntu 15 distribution. This means that it will not be able to access
+anything /apt-get/ related by default
+
+You should not be able to successfully run the following command without a lot of errors:
+#+BEGIN_SRC sh
+sudo apt-get update
+#+END_SRC
+
+In order to link the old sources to the parallella you need to run the following command:
+
+#+BEGIN_SRC sh
+sudo sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+#+END_SRC
+
+Now you should be able to run sudo apt-get update with minimal errors. Don't be discouraged if there are a few
+sources that still return errors... just as long as it is noticeably less than the initial /sudo apt-get update/
+before the *sed* command.
+
+*** MPICH
+1.) Download MPICH2
+#+BEGIN_SRC sh
+wget http://www.mpich.org/static/download/3.1/mpich-3.1.tar.gz
+#+END_SRC
+
+2.) Navigate to the directory containing the file and extract it
+#+BEGIN_SRC sh
+tar -xvf mpich-3.1.tar.gz
+#+END_SRC
+
+3.) cd Into the MPICH Folder
+#+BEGIN_SRC sh
+cd mpich-3.1
+#+END_SRC
+
+4.) Run the Configuration (This may take a bit)
+#+BEGIN_SRC sh
+./configure
+#+END_SRC
+
+When the configuration is done you should get a /Configuration Complete/ message
+
+5.) Build MPICH (This will also take a while)
+
+#+BEGIN_SRC sh
+make; sudo make install
+#+END_SRC
+
+If your build was successful you should be able to type *mpiexec --version* and get
+a response with the current version of mpi installed on your hardware.
+
+6.) Make and edit *machinefile* in your home directory
+#+BEGIN_SRC sh
+sudo vim machinefile
+#+END_SRC
+
+You want the file to have all of the static IP Addresses you are going to want to use for each board
+in your cluster. Because I will be using 4 boards I will have 4 entries in this file.
+
+For example, my *machinefile* looks like this:
+#+BEGIN_SRC
+parallella@192.168.10.101
+parallella@192.168.10.102
+parallella@192.168.10.103
+parallella@192.168.10.104
+#+END_SRC
+*** Ansible
+1.) Install Ansible
+#+BEGIN_SRC sh
+sudo apt-get update
+sudo apt-get install ansible
+#+END_SRC
+
+2.) Create a cluster.ini file and put just the IP Addresses you will be using for the machines in the cluster
+#+BEGIN_SRC sh
+vim cluster.ini
+#+END_SRC
+
+My cluster.ini file has this information:
+#+BEGIN_SRC
+192.168.10.101
+192.168.10.102
+192.168.10.103
+192.168.10.104
+#+END_SRC
+** Setting Up Remaining Nodes
+So far we have only been working with one of our parallellas. Now it is time to bring in the
+remaining nodes.
+
+*** Copying OS to SD Cards
+To avoid having to install all of the software on each node again we will read the current image on
+our first SD card and back it up to our computer (Not Parallella). Then, instead of loading
+the default parabuntu image we will load our modified version with all of the necessary software
+already installed.
+
+1.) Take the SD Card out of the parallella and connect it to your own computer.It should mount
+itself at the same location we used to initially write to the card (/dev/mmcblk0)
+
+2.) Now open a terminal and issue the following command to copy the image from the card
+#+BEGIN_SRC sh
+sudo dd if=/dev/mmcblk0 of=~/parallellaMaster.img
+#+END_SRC
+
+3.) Now its time to copy the image to the remaining unused SD Cards. Insert each SD card one at a
+time and use the command below to transfer the img to the card.
+#+BEGIN_SRC sh
+sudo dd bs=4M if=~/parallellaMaster.img of=/dev/mmcblk0
+#+END_SRC
+
+Steps 2 and 3 will take some time but we will save more time by not going through the software
+installation for every board.
+
+*** Board Configuration (Static IP, Hostname, RSA keys)
+Now we have four SD cards that have identical contents
+
+1.) Power on the first parallella
+
+2.) ssh into the board
+#+BEGIN_SRC sh
+ssh parallella@192.168.10.103
+#+END_SRC
+It is crucial that you only power on one of the boards at a time because they all have the same
+configuration and it may prove difficult to login to them all at this point in time.
+*** Hosts Configuration
+3.) Edit the hosts file
+#+BEGIN_SRC sh
+sudo vim /etc/hosts
+#+END_SRC
+
+This will be a list of hosts matched to their ip address and hostname. You want to add lines
+with your desired static IP Addresses for the boards. I added the following lines based on the
+static IPs I want my boards to have:
+#+BEGIN_SRC
+192.168.10.101 pnode1
+192.168.10.102 pnode2
+192.168.10.103 pnode3
+192.168.10.104 pnode4
+#+END_SRC
+4.) Edit the *hostname* file
+#+BEGIN_SRC sh
+sudo vim /etc/hostname
+#+END_SRC
+
+Change the hostname to your desired name. I will use *pnode1* because that is what I specified
+in the hosts file
+
+5.) Edit the eth0 file
+#+BEGIN_SRC sh
+sudo vim /etc/network/interfaces.d/eth0
+#+END_SRC
+
+You should add/modify the file so it reads as follows
+#+BEGIN_SRC
+auto eth0
+iface eth0 inet static
+address 192.168.10.101
+netmask 255.255.255.0
+gateway 192.168.10.1
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+#+END_SRC
+
+Where:
+#+BEGIN_SRC
+*address* corresponds to your desired static IP
+*gateway* corresponds to your routers default gateway
+*nameserver* is any server you want to be able to use... the 8.8.8.8 and 8.8.4.4 corresponds to google's
+#+END_SRC
+6.) Now power off the board and power it back on so it uses the static IP and hostname you set in the previous
+steps
+
+7.) You should be able to ssh into all of your nodes at this point. If you cannot make sure you correctly configured
+the static IPs and do not have any duplicates.
+
+*** RSA Keys
+In order to use these boards simultaneously you will have to enable passwordless login so that each node
+is able to login to the rest of the nodes. The easiest way to do this is to generate RSA keypair and copy
+each public key to the other boards.
+
+1.) While in the home directory of the parallella generate keys.
+#+BEGIN_SRC sh
+ssh-keygen -t rsa
+#+END_SRC
+
+2.) Follow the prompts and DO NOT enable a passphrase. You should just be hitting enter 2-3 times so you have
+the default settings for everything.
+
+3.) Copy the RSA key to the remaining nodes. To make sure you don't forget any nodes I would ssh-copy-id to every
+node in the cluster, even the one I am using. This is not necessary but it's just a precautionary measure to avoid
+making the mistake of not copying the key to all of the clients.
+
+#+BEGIN_SRC sh
+ssh-copy-id parallella@192.168.10.101
+ssh-copy-id parallella@192.168.10.102
+ssh-copy-id parallella@192.168.10.103
+ssh-copy-id parallella@192.168.10.104
+#+END_SRC
+
+4.) You should now be able to ssh from your current parallella to the rest in the cluster without a password. Make sure
+when connecting to the other nodes for the first time that you respond *yes* when prompted to add the boards to the list
+of known hosts. In order to correctly implement MPI, the boards need to have the history of connection to that board.
+
+Basically you need to make sure that the keys get added to the authorized key lists which should happen by default with
+the *ssh-copy-id* command.
+
+It is also VERY IMPORTANT when using the ssh-copy-id function to input the right user that you want to have access to.
+For example, if I only put the IP address without the /parallella/ username, the keys will not be copied to the right
+user and will therefore not work properly with MPI.
+
+5.) Repeat steps 1-4 on the rest of the nodes in the cluster
+
+
+
+
+
+
+*** MPI Configuration
+ At this point you should be able to ssh into all nodes from all nodes and not be greeted with anything besides
+ a login successful message. There should be no prompts asking if you would like to authenticate the host you're
+ trying to connect to.
+
+ 1.) Run the following command on one of the nodes (I will use pnode1)
+ #+BEGIN_SRC sh
+mpiexec -machinefile machinefile -n 1 hostname
+ #+END_SRC
+
+ and it should return the name of the current host.
+
+ 2.) Lets see if the other nodes are correctly configured
+ #+BEGIN_SRC sh
+mpiexec -machinefile machinefile -n 8 hostname
+ #+END_SRC
+
+ You should see a list of all of the hostnames each pinged twice. It should look something like this:
+ #+BEGIN_SRC
+pnode1
+pnode1
+pnode2
+pnode2
+pnode3
+pnode3
+pnode4
+pnode4
+ #+END_SRC
+
+ If you do not see a list that includes all of the hosts then you have completed a step incorrectly and should backtrack
+ to find your error.
+
+ If you get an error with several bullet points about possible errors you have not correctly copied the RSA keys from
+ EVERY node to EVERY node. You likely forgot to copy the keys to each board. Like I have said several times so far...
+ It is absolutely necessary that you can ssh from nodes 1-4 to every other node in the cluster without getting any
+ prompts from the shell.
+
+** Running Your First Program with MPI
+Now that all of the nodes are correctly configured and have all of the right files we are ready to
+try running our first program on our cluster computer.
+
+1.) Get the premade Python file on one of the nodes
+#+BEGIN_SRC sh
+wget http://www.tinkernut.com/demos/364_cluster_comp/python_test.tar.gz
+#+END_SRC
+
+2.) Extract the file
+#+BEGIN_SRC sh
+tar -xzf python_test.tar.gz
+#+END_SRC
+
+3.) Edit the file so it can run properly
+#+BEGIN_SRC sh
+vim python_test/md5_attack.py
+#+END_SRC
+
+While editing this file you want to change the 3rd line: *dict_file*
+
+Change the file so the third line reads:
+#+BEGIN_SRC python
+dict_file = "/home/parallella/python_test/dict.txt"
+#+END_SRC
+
+4.) Copy the folder to the remaining nodes in the cluster so they can run it as well
+#+BEGIN_SRC sh
+scp -r python_test 192.168.10.102:/home/parallella
+scp -r python_test 192.168.10.103:/home/parallella
+scp -r python_test 192.168.10.104:/home/parallella
+#+END_SRC
+
+5.) Finally run the program
+#+BEGIN_SRC sh
+mpiexec -f machinefile -n 1 python python_test/md5_attack.py
+#+END_SRC
+
+You should successfully run the program very quickly with the combined resources of the boards.
+** Optional
+*** dotfiles (Nicer looking/functioning Terminal)
+
+I don't like the lack of functionality and appearance of the basic terminals. I found a good video on
+a zsh and tmux workflow that I think is much nicer to work with in ubuntu's terminal.
+
+The video can be found [[https://www.youtube.com/watch?v=UgDz_9i2nwc][here]]
+
+To install these dotfiles follow these steps:
+
+1.) ssh into the board you wish to change
+2.) Clone and deploy the repository
+#+BEGIN_SRC sh
+git clone https://github.com/Parth/dotfiles
+cd dotfiles
+./deploy
+#+END_SRC
+3.) Follow the scripts and answer yes to every one except the backing up of original dotfiles
+4.) Exit ssh connection and reload the board
+5.) Re-login to the same board and hit enter
+
+*** Port Forwarding
+It may be necessary to set up port forwarding if you wish to connect to the cluster from a network
+other than the LAN.
+
+To do this, we will enable port forwarding on our Trendnet Router
+
+1.) Navigate to your routers configuration interface (Type its IP Address into a web browser)
+2.) Look for a *port forwarding* menu in either the /setup/ or /advanced/ sections of the site (Trendnet Routers house this section in the Gaming submenu)
+3.) Input the LAN IP Address that you wish for traffic to be forwarded to (My head node's LAN IP is 192.168.10.101)
+4.) Because we are going to be using ssh we will have to set it up on *TCP port 22* as ssh is handled by port 22
+5.) Make sure you enable the entry and save your new settings
+6.) Find your Routers External IP Address and make note of it.
+7.) Test to see if you can connect from outside your LAN by issuing the following commands
+#+BEGIN_SRC sh
+ssh
+#+END_SRC
