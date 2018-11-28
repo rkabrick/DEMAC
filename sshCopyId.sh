@@ -1,5 +1,6 @@
 #!/bin/bash
 # Program: Copy All SSH Keys to All Nodes
+ssh-copy-id -i ~/.ssh/id_rsa rkabrick@192.168.10.95
 ssh-copy-id -i ~/.ssh/id_rsa parallella@NOPA01
 ssh-copy-id -i ~/.ssh/id_rsa parallella@NOPA02
 ssh-copy-id -i ~/.ssh/id_rsa parallella@NOPA03

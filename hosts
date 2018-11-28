@@ -1,0 +1,75 @@
+[all:vars]
+ansible_connection = ssh
+ansible_port = 22
+ansible_user = admin
+
+[pNodes]
+parallella@192.168.10.101
+parallella@192.168.10.102
+parallella@192.168.10.103
+parallella@192.168.10.104
+parallella@192.168.10.105
+parallella@192.168.10.106
+parallella@192.168.10.107
+parallella@192.168.10.108
+parallella@192.168.10.109
+parallella@192.168.10.110
+parallella@192.168.10.111
+parallella@192.168.10.112
+parallella@192.168.10.113
+parallella@192.168.10.114
+parallella@192.168.10.115
+parallella@192.168.10.116
+parallella@192.168.10.117
+parallella@192.168.10.118
+parallella@192.168.10.119
+parallella@192.168.10.120
+parallella@192.168.10.121
+parallella@192.168.10.122
+parallella@192.168.10.123
+parallella@192.168.10.124
+
+
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+
+# Ex 1: Ungrouped hosts, specify before any group headers.
+
+#green.example.com
+#blue.example.com
+#192.168.100.1
+#192.168.100.10
+
+# Ex 2: A collection of hosts belonging to the 'webservers' group
+
+#[webservers]
+#alpha.example.org
+#beta.example.org
+#192.168.1.100
+#192.168.1.110
+
+# If you have multiple hosts following a pattern you can specify
+# them like this:
+
+#www[001:006].example.com
+
+# Ex 3: A collection of database servers in the 'dbservers' group
+
+#[dbservers]
+#
+#db01.intranet.mydomain.net
+#db02.intranet.mydomain.net
+#10.25.1.56
+#10.25.1.57
+
+# Here's another example of host ranges, this time there are no
+# leading 0s:
+
+#db-[99:101]-node.example.com
