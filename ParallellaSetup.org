@@ -1,0 +1,315 @@
+
+* Building a Parallella Cluster (DEMAC Cluster)
+This is a guide on how to properly configure a parallella cluster of 4 nodes. The steps listed should
+apply to a cluster of 24 nodes however the process should not differ at all for lesser or more nodes.
+
+*NOTE*: This guide uses a parallella head node however we will be transitioning the head node responsibility
+        to a non-parallella host in order to properly implement NFS
+
+** Preliminaries
+*** Required Materials
+For each board you need the following materials
+- Micro USB Power Cable
+- Micro SD Cards (\ge8Gb)
+- A nice Columbian guy to 3D Print a kick ass rack mount for the boards
+- Fans (Optional)
+- Router
+- Switch (Optional)
+
+** Setting up master SD Card
+Although it should go without saying, you have to use a computer that will not be in the cluster to prep SD Cards
+
+*NOTE*: We will be setting up the first SD card seperately from the others to maximize efficiency by avoiding seperate
+        program installs for each SD card in the cluster.
+
+Outline:
+ - Download vanilla OS from Parallella Website
+ - Make necessary network configurations
+ - Install programs (ie. MPICH2, Ansible, etc)
+ - Remove SD Card from Parallella and write the image from the card to an external Computer
+ - Clone the modified OS to remaining SD cards that will be used
+
+1.) Download whichever operating system you would like (Headless vs HDMI Support) from [[https://www.parallella.org/create-sdcard/][here]]
+
+2.) Navigate to your Downloads Directory
+#+BEGIN_SRC sh
+cd Downloads
+#+END_SRC
+
+3.) Extract the File
+#+BEGIN_SRC sh
+gunzip -k parabuntu-2016.11.1-headless-z7010.img.gz
+#+END_SRC
+
+4.) Figure out where your SD Card is on the machine... It helps to look at the output of this function by volume space.
+#+BEGIN_SRC sh
+lsblk
+#+END_SRC
+
+For me, it was located at */dev/mmcblk0*
+
+5.) Write the image to the SD Card
+#+BEGIN_SRC sh
+sudo dd bs=4M if=parabuntu=2016.11.1-headless-z7010.img of=/dev/mmcblk0 bs=64k
+#+END_SRC
+
+6.) Load SD Card in Parallella
+
+*** Setting up Network Settings (Router + Switch)
+**** Find IP Address and Connect Via SSH
+The following instructions will detail how to set up your network so you can easily ssh
+into the headless OS
+
+1.) Connect the one Parallella that should have an OS now to the router
+
+2.) Login to your routers configuration page by typing the IP Address of the router
+    to your web browser. It should look something like this...
+
+[[/home/rkabrick/Pictures/Screenshot%20from%202018-07-25%2013-23-09.png][Router Interface]]
+
+You need to know the login information for the router. If you are using a router that has
+been previously set up look up how to set it back to factory defaults and use the default
+login to access the page.
+
+3.) Navigate to the *Network* tab
+
+4.) Click on DCHP Client List to see a list of IP's given out by the router
+
+5.) Look for an entry in this list titled *Parallella*
+
+6.) Make a note of the IP Address of the Parallella Board
+ - /For the sake of this tutorial we will say the IP Address given out by DHCP is 192.168.10.95/
+
+**** Set a Static IP
+DHPC will continue to assign new IP Addresses that will be troublesome to keep track of. For this
+reason we will give the Parallella its own static IP Address so there is never a guess of how to
+connect to each node.
+
+1.) From an external computer, ssh into the Parallella
+#+BEGIN_SRC sh
+ssh parallella@192.168.10.95
+#+END_SRC
+
+2.) Using any text editor available to you from the Parabuntu OS, alter the file located at
+    */etc/network/interfaces.d/eth0*
+    to look like the following
+
+[[file:Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252010-28-58_2018-11-29_10-32-41.png]]#+DOWNLOADED: file:///home/rkabrick/Pictures/Screenshot%20from%202018-11-29%2010-38-33.png @ 2018-11-29 10:38:52
+[[file:Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252010-38-33_2018-11-29_10-38-52.png]]
+
+ - Replace the *address* line with whatever you would like the static IP to be
+
+3.) Edit your hosts file (*/etc/hosts*) and add all of your desired static IPs depending on how many nodes you will have
+    My *hosts* file looks like:
+#+DOWNLOADED: file:///home/rkabrick/Pictures/Screenshot%20from%202018-11-29%2010-40-11.png @ 2018-11-29 10:41:34
+[[file:Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252010-40-11_2018-11-29_10-41-34.png]]
+
+- From the above image you can see that I have inputted 24 addresses, each followed by what I want their hostname to be (*NOPA##*)
+
+4.) Confirm that you can now access the internet from the Parallella Board using any method you see fit
+
+*** Install Software
+The following instructions are to be completed on the parallella board not your own computer
+
+**** Updating Archives
+By default, if you try to run
+#+BEGIN_SRC sh
+sudo apt-get update
+#+END_SRC
+or try any command that uses the apt repositories you will likely get an error. This is caused by the Parabuntu OS being based on an
+older version of Ubuntu. For this reason it is necessary to update the apt sources so we can proceed with software installs
+
+In order to link the old sources to the parallella you need to run the following command:
+
+#+BEGIN_SRC sh
+sudo sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+#+END_SRC
+
+Now you should be able to run sudo apt-get update with minimal errors. Don't be discouraged if there are a few
+sources that still return errors... just as long as it is noticeably less than the initial /sudo apt-get update/
+before the *sed* command.
+
+**** Ansible
+Ansible is an incredibly useful automation tool that allows for easy cluster management by sending a single command
+to each board present in the cluster. When you start getting above ~5 nodes it isn't practical to update each node
+every time you wish to add/modify an aspect of the OS.
+
+*NOTE*: Ansible only has to be installed on one machine. You can choose to install it on the head Parallella or a PC that
+        is seperate from the cluster. I will do the latter.
+
+*NOTE*: I may end up looking more into Ansible and seeing how to implement roles/tasks however for now we will only be
+        using it to issue commands 'manually' to each node
+
+*NOTE*: Ansible only has to be installed on one machine, but installing it on the master SD card image will result in every node
+        having the software. This is not a problem, just a note.
+
+- *Install*:
+#+BEGIN_SRC sh
+sudo apt-get install ansible
+#+END_SRC
+
+- *Configuration*
+Ansible uses what is called an '/inventory file/' to know what machines to communicate with and how to do so.
+
+By default, Ansible will look for this file in: */etc/ansible/hosts*
+    - If you wish to use a different file you will have to pass *-i* followed by your inventory file each
+      time you issue an ansible command
+
+Because we already set up our */etc/hosts* file to house all of the static IPs of the cluster we will have to
+copy that list over to the /inventory file/. I inserted the following into the beginning of my inventory file:
+
+#+DOWNLOADED: file:///home/rkabrick/Pictures/Screenshot%20from%202018-11-29%2011-01-57.png @ 2018-11-29 11:02:18
+[[file:Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252011-01-57_2018-11-29_11-02-18.png]]
+
+As you can see I have set the group name of all of the nodes to be *pNodes*. The group name is used every time you wish
+to issue an Ansible command. Feel free to name it whatever you would like.
+
+Now you should move on to the installation of MPICH2. However, once all of your nodes are up an running return to this section
+so you can test Ansible by issuing the command:
+#+BEGIN_SRC sh
+ansible pNodes -m ping
+#+END_SRC
+
+You will know what nodes are successfully integrated into the cluster if they return a pong to the ping request:
+
+#+DOWNLOADED: file:///home/rkabrick/Pictures/Screenshot%20from%202018-11-29%2011-07-24.png @ 2018-11-29 11:07:42
+[[file:Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252011-07-24_2018-11-29_11-07-42.png]]
+
+**** MPICH2
+MPI stands for Message Passing Interface. This is what allows computation to be split up between the nodes in the
+cluster to significantly improve performance.
+
+*NOTE*: Unlike Ansible, MPI needs to be installed on each node in order to function properly. This means that you
+        must install it on the Parallella and not an external PC.
+
+1.) Download MPICH2
+#+BEGIN_SRC sh
+wget http://www.mpich.org/static/downloads/3.2.1/mpich-3.2.1.tar.gz
+#+END_SRC
+
+2.) Navigate to the directory containing the file and extract it
+#+BEGIN_SRC sh
+tar -xvf mpich-3.1.2.tar.gz
+#+END_SRC
+
+3.) cd Into the MPICH Folder
+#+BEGIN_SRC sh
+cd mpich-3.1.2
+#+END_SRC
+
+4.) Run the Configuration (This may take a bit)
+#+BEGIN_SRC sh
+./configure
+#+END_SRC
+
+When the configuration is done you should get a /Configuration Complete/ message
+
+5.) Build MPICH (This will also take a while)
+
+#+BEGIN_SRC sh
+make; sudo make install
+#+END_SRC
+
+If your build was successful you should be able to type *mpiexec --version* and get
+a response with the current version of mpi installed on your hardware.
+
+**** Clone the DEMAC Repository
+The DEMAC repository contains the necessary files to test and maintain the cluster. Clone it by issuing:
+
+#+BEGIN_SRC sh
+git clone https://github.com/rkabrick/DEMAC
+#+END_SRC
+
+*** Write Master Image to Remaining Nodes
+Now that all of the legwork has been done on one of the nodes, we will be copying the modified OS image to
+an external PC so we can copy it to the remaining SD cards.
+
+1.) Remove SD card from Parallella and insert it into an external PC (Linux)
+
+2.) Open a terminal window
+
+3.) Find the name of the device
+#+BEGIN_SRC sh
+sudo fdisk -l
+#+END_SRC
+
+ex.) Mine was mmcblk0
+
+4.) Unmount the device
+#+BEGIN_SRC sh
+sudo umount /dev/mmcblk0
+#+END_SRC
+
+5.) Create an image of the device
+#+BEGIN_SRC sh
+sudo dd if=/dev/mmcblk0 of=~/parallellaMaster.img
+#+END_SRC
+
+I named my new image *parallellaMaster.img*
+
+6.) Refer to previous instruction on how to write an image to the remaining SD cards
+
+*NOTE*: Make sure you use the new image and not the Vanilla OS... otherwise all of the installations and configurations we did will have been for nothing.
+
+**** Change Static IP of New Nodes
+Because each node will originally have the same network configuration as the original modified node we need to change the static IPs
+so that they correspond to whatever number node they are.
+
+1.) Refer back to the steps on setting up a static IP
+
+2.) Modify the eth0 file so that the *address* line reads a different IP for each of the nodes
+
+**** SSH
+In order for the nodes to communicate we need to SSH into every node from EVERY other node we will be using. Otherwise, when we
+go to use MPI we will get errors because the nodes do not have permission to access one another.
+
+Depending on how many nodes you have you may want to do this manually however it is more efficient to utilize the bash script in
+the DEMAC directory. The script is called *sshCopyId.sh*. It is a very readable script however you will have to modify it with
+the appropriate IP Addresses of each node in the cluster.
+
+*** Running Our First Program
+Assuming you have made it this far, we can now run our first program on the cluster.
+
+1.) Run the following command to ping each ARM core on the Parallella
+#+BEGIN_SRC sh
+mpiexec -machinefile ./DEMAC/machinefile -n 48 ./DEMAC/mpi_hello_world
+#+END_SRC
+
+*NOTE*: The number that follows the *-n* flag corresponds to the number of processes that will be run by MPI. Because
+        each ARM chip has 2 cores, that number should be (2 * # of Nodes). You can do less than this number however if
+        you exceed it, MPI will throw an error
+
+** Optional
+*** dotfiles (Nicer looking/functioning Terminal)
+
+I don't like the lack of functionality and appearance of the basic terminals. I found a good video on
+a zsh and tmux workflow that I think is much nicer to work with in ubuntu's terminal.
+
+The video can be found [[https://www.youtube.com/watch?v=UgDz_9i2nwc][here]]
+
+To install these dotfiles follow these steps:
+
+1.) ssh into the board you wish to change
+2.) Clone and deploy the repository
+#+BEGIN_SRC sh
+git clone https://github.com/Parth/dotfiles
+cd dotfiles
+./deploy
+#+END_SRC
+3.) Follow the scripts and answer yes to every one except the backing up of original dotfiles
+4.) Exit ssh connection and reload the board
+5.) Re-login to the same board and hit enter
+
+*** Port Forwarding
+It may be necessary to set up port forwarding if you wish to connect to the cluster from a network
+other than the LAN.
+
+To do this, we will enable port forwarding on our Trendnet Router
+
+1.) Navigate to your routers configuration interface (Type its IP Address into a web browser)
+2.) Look for a *port forwarding* menu in either the /setup/ or /advanced/ sections of the site (Trendnet Routers house this section in the Gaming submenu)
+3.) Input the LAN IP Address that you wish for traffic to be forwarded to (My head node's LAN IP is 192.168.10.101)
+4.) Because we are going to be using ssh we will have to set it up on *TCP port 22* as ssh is handled by port 22
+5.) Make sure you enable the entry and save your new settings
+6.) Find your Routers External IP Address and make note of it.
+7.) Test to see if you can connect from outside your LAN by issuing the following commands

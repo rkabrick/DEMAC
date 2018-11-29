@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2018-11-29 Thu 11:40 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="rkabrick" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0c23f01">1. Building a Parallella Cluster (DEMAC Cluster)</a>
+<ul>
+<li><a href="#org2f7e94a">1.1. Preliminaries</a>
+<ul>
+<li><a href="#org84c60dd">1.1.1. Required Materials</a></li>
+</ul>
+</li>
+<li><a href="#orgb2db5ce">1.2. Setting up master SD Card</a>
+<ul>
+<li><a href="#org3e52423">1.2.1. Setting up Network Settings (Router + Switch)</a></li>
+<li><a href="#orgcd7b18d">1.2.2. Install Software</a></li>
+<li><a href="#orgb38bbeb">1.2.3. Write Master Image to Remaining Nodes</a></li>
+<li><a href="#org0869165">1.2.4. Running Our First Program</a></li>
+</ul>
+</li>
+<li><a href="#orgfc13cdf">1.3. Optional</a>
+<ul>
+<li><a href="#org24d41a5">1.3.1. dotfiles (Nicer looking/functioning Terminal)</a></li>
+<li><a href="#orgce7ad3f">1.3.2. Port Forwarding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0c23f01" class="outline-2">
+<h2 id="org0c23f01"><span class="section-number-2">1</span> Building a Parallella Cluster (DEMAC Cluster)</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This is a guide on how to properly configure a parallella cluster of 4 nodes. The steps listed should
+apply to a cluster of 24 nodes however the process should not differ at all for lesser or more nodes.
+</p>
+
+<p>
+<b>NOTE</b>: This guide uses a parallella head node however we will be transitioning the head node responsibility
+        to a non-parallella host in order to properly implement NFS
+</p>
+</div>
+
+<div id="outline-container-org2f7e94a" class="outline-3">
+<h3 id="org2f7e94a"><span class="section-number-3">1.1</span> Preliminaries</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org84c60dd" class="outline-4">
+<h4 id="org84c60dd"><span class="section-number-4">1.1.1</span> Required Materials</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+For each board you need the following materials
+</p>
+<ul class="org-ul">
+<li>Micro USB Power Cable</li>
+<li>Micro SD Cards (&ge;8Gb)</li>
+<li>A nice Columbian guy to 3D Print a kick ass rack mount for the boards</li>
+<li>Fans (Optional)</li>
+<li>Router</li>
+<li>Switch (Optional)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb2db5ce" class="outline-3">
+<h3 id="orgb2db5ce"><span class="section-number-3">1.2</span> Setting up master SD Card</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Although it should go without saying, you have to use a computer that will not be in the cluster to prep SD Cards
+</p>
+
+<p>
+<b>NOTE</b>: We will be setting up the first SD card seperately from the others to maximize efficiency by avoiding seperate
+        program installs for each SD card in the cluster.
+</p>
+
+<p>
+Outline:
+</p>
+<ul class="org-ul">
+<li>Download vanilla OS from Parallella Website</li>
+<li>Make necessary network configurations</li>
+<li>Install programs (ie. MPICH2, Ansible, etc)</li>
+<li>Remove SD Card from Parallella and write the image from the card to an external Computer</li>
+<li>Clone the modified OS to remaining SD cards that will be used</li>
+</ul>
+
+<p>
+1.) Download whichever operating system you would like (Headless vs HDMI Support) from <a href="https://www.parallella.org/create-sdcard/">here</a>
+</p>
+
+<p>
+2.) Navigate to your Downloads Directory
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #61afef; font-weight: bold;">cd</span> Downloads
+</pre>
+</div>
+
+<p>
+3.) Extract the File
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">gunzip -k parabuntu-2016.11.1-headless-z7010.img.gz
+</pre>
+</div>
+
+<p>
+4.) Figure out where your SD Card is on the machine&#x2026; It helps to look at the output of this function by volume space.
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">lsblk
+</pre>
+</div>
+
+<p>
+For me, it was located at <b>/dev/mmcblk0</b>
+</p>
+
+<p>
+5.) Write the image to the SD Card
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">sudo dd <span style="color: #61afef;">bs</span>=4M <span style="color: #61afef;">if</span>=<span style="color: #61afef;">parabuntu</span>=2016.11.1-headless-z7010.img <span style="color: #61afef;">of</span>=/dev/mmcblk0 <span style="color: #61afef;">bs</span>=64k
+</pre>
+</div>
+
+<p>
+6.) Load SD Card in Parallella
+</p>
+</div>
+
+<div id="outline-container-org3e52423" class="outline-4">
+<h4 id="org3e52423"><span class="section-number-4">1.2.1</span> Setting up Network Settings (Router + Switch)</h4>
+<div class="outline-text-4" id="text-1-2-1">
+</div>
+<ol class="org-ol">
+<li><a id="org27b611f"></a>Find IP Address and Connect Via SSH<br />
+<div class="outline-text-5" id="text-1-2-1-1">
+<p>
+The following instructions will detail how to set up your network so you can easily ssh
+into the headless OS
+</p>
+
+<p>
+1.) Connect the one Parallella that should have an OS now to the router
+</p>
+
+<p>
+2.) Login to your routers configuration page by typing the IP Address of the router
+    to your web browser. It should look something like this&#x2026;
+</p>
+
+<p>
+<a href="file:///home/rkabrick/Pictures/Screenshot%20from%202018-07-25%2013-23-09.png">Router Interface</a>
+</p>
+
+<p>
+You need to know the login information for the router. If you are using a router that has
+been previously set up look up how to set it back to factory defaults and use the default
+login to access the page.
+</p>
+
+<p>
+3.) Navigate to the <b>Network</b> tab
+</p>
+
+<p>
+4.) Click on DCHP Client List to see a list of IP's given out by the router
+</p>
+
+<p>
+5.) Look for an entry in this list titled <b>Parallella</b>
+</p>
+
+<p>
+6.) Make a note of the IP Address of the Parallella Board
+</p>
+<ul class="org-ul">
+<li><i>For the sake of this tutorial we will say the IP Address given out by DHCP is 192.168.10.95</i></li>
+</ul>
+</div>
+</li>
+
+<li><a id="org4974d52"></a>Set a Static IP<br />
+<div class="outline-text-5" id="text-1-2-1-2">
+<p>
+DHPC will continue to assign new IP Addresses that will be troublesome to keep track of. For this
+reason we will give the Parallella its own static IP Address so there is never a guess of how to
+connect to each node.
+</p>
+
+<p>
+1.) From an external computer, ssh into the Parallella
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">ssh parallella@192.168.10.95
+</pre>
+</div>
+
+<p>
+2.) Using any text editor available to you from the Parabuntu OS, alter the file located at
+    <b>/etc/network/interfaces.d/eth0</b>
+    to look like the following
+</p>
+
+<p>
+<img src="Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252010-28-58_2018-11-29_10-32-41.png" alt="Screenshot%2520from%25202018-11-29%252010-28-58_2018-11-29_10-32-41.png" />#+DOWNLOADED: <img src="file:///home/rkabrick/Pictures/Screenshot%20from%202018-11-29%2010-38-33.png" alt="Screenshot%20from%202018-11-29%2010-38-33.png" /> @ 2018-11-29 10:38:52
+<img src="Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252010-38-33_2018-11-29_10-38-52.png" alt="Screenshot%2520from%25202018-11-29%252010-38-33_2018-11-29_10-38-52.png" />
+</p>
+
+<ul class="org-ul">
+<li>Replace the <b>address</b> line with whatever you would like the static IP to be</li>
+</ul>
+
+<p>
+3.) Edit your hosts file (<b>/etc/hosts</b>) and add all of your desired static IPs depending on how many nodes you will have
+    My <b>hosts</b> file looks like:
+</p>
+
+<div class="figure">
+<p><img src="Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252010-40-11_2018-11-29_10-41-34.png" alt="Screenshot%2520from%25202018-11-29%252010-40-11_2018-11-29_10-41-34.png" />
+</p>
+</div>
+
+<ul class="org-ul">
+<li>From the above image you can see that I have inputted 24 addresses, each followed by what I want their hostname to be (<b>NOPA##</b>)</li>
+</ul>
+
+<p>
+4.) Confirm that you can now access the internet from the Parallella Board using any method you see fit
+</p>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-orgcd7b18d" class="outline-4">
+<h4 id="orgcd7b18d"><span class="section-number-4">1.2.2</span> Install Software</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+The following instructions are to be completed on the parallella board not your own computer
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="org56276d1"></a>Updating Archives<br />
+<div class="outline-text-5" id="text-1-2-2-1">
+<p>
+By default, if you try to run
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">sudo apt-get update
+</pre>
+</div>
+<p>
+or try any command that uses the apt repositories you will likely get an error. This is caused by the Parabuntu OS being based on an
+older version of Ubuntu. For this reason it is necessary to update the apt sources so we can proceed with software installs
+</p>
+
+<p>
+In order to link the old sources to the parallella you need to run the following command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">sudo sed -i -re <span style="color: #98be65;">'s/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g'</span> /etc/apt/sources.list
+</pre>
+</div>
+
+<p>
+Now you should be able to run sudo apt-get update with minimal errors. Don't be discouraged if there are a few
+sources that still return errors&#x2026; just as long as it is noticeably less than the initial <i>sudo apt-get update</i>
+before the <b>sed</b> command.
+</p>
+</div>
+</li>
+
+<li><a id="org5008ff8"></a>Ansible<br />
+<div class="outline-text-5" id="text-1-2-2-2">
+<p>
+Ansible is an incredibly useful automation tool that allows for easy cluster management by sending a single command
+to each board present in the cluster. When you start getting above ~5 nodes it isn't practical to update each node
+every time you wish to add/modify an aspect of the OS.
+</p>
+
+<p>
+<b>NOTE</b>: Ansible only has to be installed on one machine. You can choose to install it on the head Parallella or a PC that
+        is seperate from the cluster. I will do the latter.
+</p>
+
+<p>
+<b>NOTE</b>: I may end up looking more into Ansible and seeing how to implement roles/tasks however for now we will only be
+        using it to issue commands 'manually' to each node
+</p>
+
+<p>
+<b>NOTE</b>: Ansible only has to be installed on one machine, but installing it on the master SD card image will result in every node
+        having the software. This is not a problem, just a note.
+</p>
+
+<ul class="org-ul">
+<li><b>Install</b>:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-sh">sudo apt-get install ansible
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><b>Configuration</b></li>
+</ul>
+<p>
+Ansible uses what is called an '<i>inventory file</i>' to know what machines to communicate with and how to do so.
+</p>
+
+<p>
+By default, Ansible will look for this file in: <b>/etc/ansible/hosts</b>
+</p>
+<ul class="org-ul">
+<li>If you wish to use a different file you will have to pass <b>-i</b> followed by your inventory file each
+time you issue an ansible command</li>
+</ul>
+
+<p>
+Because we already set up our <b>/etc/hosts</b> file to house all of the static IPs of the cluster we will have to
+copy that list over to the <i>inventory file</i>. I inserted the following into the beginning of my inventory file:
+</p>
+
+
+<div class="figure">
+<p><img src="Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252011-01-57_2018-11-29_11-02-18.png" alt="Screenshot%2520from%25202018-11-29%252011-01-57_2018-11-29_11-02-18.png" />
+</p>
+</div>
+
+<p>
+As you can see I have set the group name of all of the nodes to be <b>pNodes</b>. The group name is used every time you wish
+to issue an Ansible command. Feel free to name it whatever you would like.
+</p>
+
+<p>
+Now you should move on to the installation of MPICH2. However, once all of your nodes are up an running return to this section
+so you can test Ansible by issuing the command:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">ansible pNodes -m ping
+</pre>
+</div>
+
+<p>
+You will know what nodes are successfully integrated into the cluster if they return a pong to the ping request:
+</p>
+
+
+<div class="figure">
+<p><img src="Building%20a%20Parallella%20Cluster%20(DEMAC%20Cluster)/Screenshot%2520from%25202018-11-29%252011-07-24_2018-11-29_11-07-42.png" alt="Screenshot%2520from%25202018-11-29%252011-07-24_2018-11-29_11-07-42.png" />
+</p>
+</div>
+</div>
+</li>
+
+<li><a id="orge5943d8"></a>MPICH2<br />
+<div class="outline-text-5" id="text-1-2-2-3">
+<p>
+MPI stands for Message Passing Interface. This is what allows computation to be split up between the nodes in the
+cluster to significantly improve performance.
+</p>
+
+<p>
+<b>NOTE</b>: Unlike Ansible, MPI needs to be installed on each node in order to function properly. This means that you
+        must install it on the Parallella and not an external PC.
+</p>
+
+<p>
+1.) Download MPICH2
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">wget http://www.mpich.org/static/downloads/3.2.1/mpich-3.2.1.tar.gz
+</pre>
+</div>
+
+<p>
+2.) Navigate to the directory containing the file and extract it
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">tar -xvf mpich-3.1.2.tar.gz
+</pre>
+</div>
+
+<p>
+3.) cd Into the MPICH Folder
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #61afef; font-weight: bold;">cd</span> mpich-3.1.2
+</pre>
+</div>
+
+<p>
+4.) Run the Configuration (This may take a bit)
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">./configure
+</pre>
+</div>
+
+<p>
+When the configuration is done you should get a <i>Configuration Complete</i> message
+</p>
+
+<p>
+5.) Build MPICH (This will also take a while)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">make; sudo make install
+</pre>
+</div>
+
+<p>
+If your build was successful you should be able to type <b>mpiexec &#x2013;version</b> and get
+a response with the current version of mpi installed on your hardware.
+</p>
+</div>
+</li>
+
+<li><a id="orgdb4b653"></a>Clone the DEMAC Repository<br />
+<div class="outline-text-5" id="text-1-2-2-4">
+<p>
+The DEMAC repository contains the necessary files to test and maintain the cluster. Clone it by issuing:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git clone https://github.com/rkabrick/DEMAC
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-orgb38bbeb" class="outline-4">
+<h4 id="orgb38bbeb"><span class="section-number-4">1.2.3</span> Write Master Image to Remaining Nodes</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+Now that all of the legwork has been done on one of the nodes, we will be copying the modified OS image to
+an external PC so we can copy it to the remaining SD cards.
+</p>
+
+<p>
+1.) Remove SD card from Parallella and insert it into an external PC (Linux)
+</p>
+
+<p>
+2.) Open a terminal window
+</p>
+
+<p>
+3.) Find the name of the device
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">sudo fdisk -l
+</pre>
+</div>
+
+<p>
+ex.) Mine was mmcblk0
+</p>
+
+<p>
+4.) Unmount the device
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">sudo umount /dev/mmcblk0
+</pre>
+</div>
+
+<p>
+5.) Create an image of the device
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">sudo dd <span style="color: #61afef;">if</span>=/dev/mmcblk0 <span style="color: #61afef;">of</span>=~/parallellaMaster.img
+</pre>
+</div>
+
+<p>
+I named my new image <b>parallellaMaster.img</b>
+</p>
+
+<p>
+6.) Refer to previous instruction on how to write an image to the remaining SD cards
+</p>
+
+<p>
+<b>NOTE</b>: Make sure you use the new image and not the Vanilla OS&#x2026; otherwise all of the installations and configurations we did will have been for nothing.
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="orgafa2c75"></a>Change Static IP of New Nodes<br />
+<div class="outline-text-5" id="text-1-2-3-1">
+<p>
+Because each node will originally have the same network configuration as the original modified node we need to change the static IPs
+so that they correspond to whatever number node they are.
+</p>
+
+<p>
+1.) Refer back to the steps on setting up a static IP
+</p>
+
+<p>
+2.) Modify the eth0 file so that the <b>address</b> line reads a different IP for each of the nodes
+</p>
+</div>
+</li>
+
+<li><a id="orgd4dbd2e"></a>SSH<br />
+<div class="outline-text-5" id="text-1-2-3-2">
+<p>
+In order for the nodes to communicate we need to SSH into every node from EVERY other node we will be using. Otherwise, when we
+go to use MPI we will get errors because the nodes do not have permission to access one another.
+</p>
+
+<p>
+Depending on how many nodes you have you may want to do this manually however it is more efficient to utilize the bash script in
+the DEMAC directory. The script is called <b>sshCopyId.sh</b>. It is a very readable script however you will have to modify it with
+the appropriate IP Addresses of each node in the cluster.
+</p>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-org0869165" class="outline-4">
+<h4 id="org0869165"><span class="section-number-4">1.2.4</span> Running Our First Program</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+Assuming you have made it this far, we can now run our first program on the cluster.
+</p>
+
+<p>
+1.) Run the following command to ping each ARM core on the Parallella
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">mpiexec -machinefile ./DEMAC/machinefile -n 48 ./DEMAC/mpi_hello_world
+</pre>
+</div>
+
+<p>
+<b>NOTE</b>: The number that follows the <b>-n</b> flag corresponds to the number of processes that will be run by MPI. Because
+        each ARM chip has 2 cores, that number should be (2 * # of Nodes). You can do less than this number however if
+        you exceed it, MPI will throw an error
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfc13cdf" class="outline-3">
+<h3 id="orgfc13cdf"><span class="section-number-3">1.3</span> Optional</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org24d41a5" class="outline-4">
+<h4 id="org24d41a5"><span class="section-number-4">1.3.1</span> dotfiles (Nicer looking/functioning Terminal)</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+I don't like the lack of functionality and appearance of the basic terminals. I found a good video on
+a zsh and tmux workflow that I think is much nicer to work with in ubuntu's terminal.
+</p>
+
+<p>
+The video can be found <a href="https://www.youtube.com/watch?v=UgDz_9i2nwc">here</a>
+</p>
+
+<p>
+To install these dotfiles follow these steps:
+</p>
+
+<p>
+1.) ssh into the board you wish to change
+2.) Clone and deploy the repository
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">git clone https://github.com/Parth/dotfiles
+<span style="color: #61afef; font-weight: bold;">cd</span> dotfiles
+./deploy
+</pre>
+</div>
+<p>
+3.) Follow the scripts and answer yes to every one except the backing up of original dotfiles
+4.) Exit ssh connection and reload the board
+5.) Re-login to the same board and hit enter
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgce7ad3f" class="outline-4">
+<h4 id="orgce7ad3f"><span class="section-number-4">1.3.2</span> Port Forwarding</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+It may be necessary to set up port forwarding if you wish to connect to the cluster from a network
+other than the LAN.
+</p>
+
+<p>
+To do this, we will enable port forwarding on our Trendnet Router
+</p>
+
+<p>
+1.) Navigate to your routers configuration interface (Type its IP Address into a web browser)
+2.) Look for a <b>port forwarding</b> menu in either the <i>setup</i> or <i>advanced</i> sections of the site (Trendnet Routers house this section in the Gaming submenu)
+3.) Input the LAN IP Address that you wish for traffic to be forwarded to (My head node's LAN IP is 192.168.10.101)
+4.) Because we are going to be using ssh we will have to set it up on <b>TCP port 22</b> as ssh is handled by port 22
+5.) Make sure you enable the entry and save your new settings
+6.) Find your Routers External IP Address and make note of it.
+7.) Test to see if you can connect from outside your LAN by issuing the following commands
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: rkabrick</p>
+<p class="date">Created: 2018-11-29 Thu 11:40</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
