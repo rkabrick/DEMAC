@@ -1,0 +1,12 @@
+4 Processes: 0.002795
+8 Processes: 0.002791
+12 Processes: 0.003050
+16 Processes: 0.002887
+20 Processes: 0.002676
+24 Processes: 0.002648
+28 Processes: 0.002646
+32 Processes: 0.002708
+36 Processes: 0.002797
+40 Processes: 0.002624
+44 Processes: 0.002604
+48 Processes: 0.002605
