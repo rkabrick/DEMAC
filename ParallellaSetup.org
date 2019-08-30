@@ -11,7 +11,7 @@ apply to a cluster of 24 nodes however the process should not differ at all for 
 For each board you need the following materials
 - Micro USB Power Cable
 - Micro SD Cards (\ge8Gb)
-- A nice Columbian guy to 3D Print a kick ass rack mount for the boards
+- A nice Colombian guy to 3D Print a kick ass rack mount for the boards
 - Fans (Optional)
 - Router
 - Switch (Optional)
