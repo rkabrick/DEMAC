@@ -306,10 +306,10 @@ other than the LAN.
 
 To do this, we will enable port forwarding on our Trendnet Router
 
-1.) Navigate to your routers configuration interface (Type its IP Address into a web browser)
-2.) Look for a *port forwarding* menu in either the /setup/ or /advanced/ sections of the site (Trendnet Routers house this section in the Gaming submenu)
-3.) Input the LAN IP Address that you wish for traffic to be forwarded to (My head node's LAN IP is 192.168.10.101)
-4.) Because we are going to be using ssh we will have to set it up on *TCP port 22* as ssh is handled by port 22
-5.) Make sure you enable the entry and save your new settings
-6.) Find your Routers External IP Address and make note of it.
-7.) Test to see if you can connect from outside your LAN by issuing the following commands
+1) Navigate to your routers configuration interface (Type its IP Address into a web browser)
+2) Look for a *port forwarding* menu in either the /setup/ or /advanced/ sections of the site (Trendnet Routers house this section in the Gaming submenu)
+3) Input the LAN IP Address that you wish for traffic to be forwarded to (My head node's LAN IP is 192.168.10.101)
+4) Because we are going to be using ssh we will have to set it up on *TCP port 22* as ssh is handled by port 22
+5) Make sure you enable the entry and save your new settings
+6) Find your Routers External IP Address and make note of it.
+7) Test to see if you can connect from outside your LAN by issuing the following commands
